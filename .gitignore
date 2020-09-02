@@ -4,3 +4,6 @@
 !.idea/codeStyles/
 
 build/
+
+## Super Secret Things
+gradle.properties

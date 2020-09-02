@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'maven-publish'
 }
 
 group 'me.anisekai'
@@ -18,4 +19,26 @@ dependencies {
     compile group: 'org.json', name: 'json', version: '20200518'
     // https://mvnrepository.com/artifact/org.jetbrains/annotations
     compile group: 'org.jetbrains', name: 'annotations', version: '19.0.0'
+}
+
+publishing {
+
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri('https://maven.pkg.github.com/anisekai-project/simple-http-client')
+
+            credentials {
+                username = project.findProperty('gpr.user') ?: System.getenv('username')
+                password = project.findProperty('gpr.key') ?: System.getenv('token')
+            }
+        }
+
+
+    }
+    publications {
+        gpr(MavenPublication) {
+            from(components.java)
+        }
+    }
 }
