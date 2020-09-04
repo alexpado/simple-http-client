@@ -67,7 +67,7 @@ public abstract class RestAction<T> implements IRestAction<T>, IRestOptions<T> {
      * @param requestBody
      *         The response body received.
      *
-     * @return The response body wrapped in an object of type {@link T}
+     * @return The response body as byte array.
      */
     @Override
     public T convert(byte[] requestBody) {

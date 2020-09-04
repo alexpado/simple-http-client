@@ -48,7 +48,7 @@ public interface IRestOptions<T> {
      * @param requestBody
      *         The response body received.
      *
-     * @return The response body wrapped in an object of type {@link T}
+     * @return The response body as byte array.
      */
     T convert(byte[] requestBody);
 
