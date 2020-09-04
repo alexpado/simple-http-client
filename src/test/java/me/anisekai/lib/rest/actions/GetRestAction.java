@@ -35,9 +35,9 @@ public class GetRestAction extends RestAction<JSONObject> {
 
     @NotNull
     @Override
-    public JSONObject convert(String requestBody) {
+    public JSONObject convert(byte[] requestBody) {
 
-        return new JSONObject(requestBody);
+        return new JSONObject(new String(requestBody));
     }
 
 }

@@ -2,7 +2,7 @@ package me.anisekai.lib.rest.exceptions;
 
 public class RestException extends Exception {
 
-    private final String responseBody;
+    private final byte[] responseBody;
     private final int    responseStatus;
 
     /**
@@ -13,7 +13,7 @@ public class RestException extends Exception {
      * @param responseStatus
      *         The response status that the server returned.
      */
-    public RestException(String responseBody, int responseStatus) {
+    public RestException(byte[] responseBody, int responseStatus) {
 
         super("The server did not responded with 2xx code.");
         this.responseBody   = responseBody;
@@ -25,7 +25,7 @@ public class RestException extends Exception {
      *
      * @return The response body.
      */
-    public String getResponseBody() {
+    public byte[] getResponseBody() {
 
         return responseBody;
     }

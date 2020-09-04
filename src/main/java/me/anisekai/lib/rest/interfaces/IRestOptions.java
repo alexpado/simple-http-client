@@ -50,6 +50,6 @@ public interface IRestOptions<T> {
      *
      * @return The response body wrapped in an object of type {@link T}
      */
-    T convert(String requestBody);
+    T convert(byte[] requestBody);
 
 }
