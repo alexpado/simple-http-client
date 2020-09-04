@@ -1,7 +1,6 @@
 package me.anisekai.lib.rest.interfaces;
 
 import me.anisekai.lib.rest.exceptions.RestException;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
 
@@ -42,6 +41,6 @@ public interface IRestAction<T> {
      * @throws Exception
      *         If the http couldn't be sent or if the response couldn't be parsed.
      */
-    @NotNull T complete() throws Exception;
+    T complete() throws Exception;
 
 }

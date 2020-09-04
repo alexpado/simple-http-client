@@ -7,9 +7,7 @@ import me.anisekai.lib.rest.interfaces.IRestOptions;
 import org.jetbrains.annotations.NotNull;
 
 import javax.net.ssl.HttpsURLConnection;
-import java.io.BufferedReader;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -69,10 +67,10 @@ public abstract class RestAction<T> implements IRestAction<T>, IRestOptions<T> {
      * @param requestBody
      *         The response body received.
      *
-     * @return The response body wrapped in an object of type {@link T}
+     * @return The response body as byte array.
      */
     @Override
-    public T convert(String requestBody) {
+    public T convert(byte[] requestBody) {
 
         return null;
     }
@@ -139,7 +137,7 @@ public abstract class RestAction<T> implements IRestAction<T>, IRestOptions<T> {
      *         If the http couldn't be sent or if the response couldn't be parsed.
      */
     @Override
-    public @NotNull T complete() throws Exception {
+    public T complete() throws Exception {
 
         String urlStr;
         // Build the URL.
@@ -170,20 +168,18 @@ public abstract class RestAction<T> implements IRestAction<T>, IRestOptions<T> {
 
         boolean isOk = http.getResponseCode() >= HttpURLConnection.HTTP_OK && http.getResponseCode() < HttpURLConnection.HTTP_MULT_CHOICE;
 
-        String responseBody;
+        if (http.getResponseCode() == HttpURLConnection.HTTP_NO_CONTENT) {
+            return null;
+        }
+
+        byte[] responseBody;
 
         try (InputStream stream = (isOk ? http.getInputStream() : http.getErrorStream())) {
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(stream))) {
-                responseBody = reader.lines().collect(Collectors.joining("\n"));
-            }
+            responseBody = stream.readAllBytes();
         }
 
         if (!isOk) {
             throw new RestException(responseBody, http.getResponseCode());
-        }
-
-        if (http.getResponseCode() == HttpURLConnection.HTTP_NO_CONTENT) {
-            return null;
         }
 
         return this.convert(responseBody);
