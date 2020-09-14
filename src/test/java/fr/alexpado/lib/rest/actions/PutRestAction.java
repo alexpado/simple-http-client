@@ -1,25 +1,25 @@
-package me.anisekai.lib.rest.actions;
+package fr.alexpado.lib.rest.actions;
 
-import me.anisekai.lib.rest.RestAction;
-import me.anisekai.lib.rest.enums.RequestMethod;
+import fr.alexpado.lib.rest.RestAction;
+import fr.alexpado.lib.rest.enums.RequestMethod;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class DeleteRestAction extends RestAction<JSONObject> {
+public class PutRestAction extends RestAction<JSONObject> {
 
     @Override
     public @NotNull RequestMethod getRequestMethod() {
 
-        return RequestMethod.DELETE;
+        return RequestMethod.PUT;
     }
 
     @Override
     public @NotNull String getRequestURL() {
 
-        return "https://postman-echo.com/delete";
+        return "https://postman-echo.com/put";
     }
 
     @Override

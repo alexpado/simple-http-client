@@ -1,4 +1,4 @@
-package me.anisekai.lib.rest.enums;
+package fr.alexpado.lib.rest.enums;
 
 public enum RequestMethod {
 

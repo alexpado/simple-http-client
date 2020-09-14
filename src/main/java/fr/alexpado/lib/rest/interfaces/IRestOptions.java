@@ -1,6 +1,6 @@
-package me.anisekai.lib.rest.interfaces;
+package fr.alexpado.lib.rest.interfaces;
 
-import me.anisekai.lib.rest.enums.RequestMethod;
+import fr.alexpado.lib.rest.enums.RequestMethod;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;

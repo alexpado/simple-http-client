@@ -1,7 +1,7 @@
-package me.anisekai.lib.rest.actions;
+package fr.alexpado.lib.rest.actions;
 
-import me.anisekai.lib.rest.RestAction;
-import me.anisekai.lib.rest.enums.RequestMethod;
+import fr.alexpado.lib.rest.RestAction;
+import fr.alexpado.lib.rest.enums.RequestMethod;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 

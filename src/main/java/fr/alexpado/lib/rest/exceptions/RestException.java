@@ -1,4 +1,4 @@
-package me.anisekai.lib.rest.exceptions;
+package fr.alexpado.lib.rest.exceptions;
 
 public class RestException extends Exception {
 

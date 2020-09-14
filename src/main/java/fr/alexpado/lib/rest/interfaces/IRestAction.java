@@ -1,6 +1,6 @@
-package me.anisekai.lib.rest.interfaces;
+package fr.alexpado.lib.rest.interfaces;
 
-import me.anisekai.lib.rest.exceptions.RestException;
+import fr.alexpado.lib.rest.exceptions.RestException;
 
 import java.util.function.Consumer;
 

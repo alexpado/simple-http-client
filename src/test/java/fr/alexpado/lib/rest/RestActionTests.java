@@ -1,11 +1,11 @@
-package me.anisekai.lib.rest;
+package fr.alexpado.lib.rest;
 
 
-import me.anisekai.lib.rest.actions.GetRestAction;
-import me.anisekai.lib.rest.actions.PostFormAction;
-import me.anisekai.lib.rest.actions.PostRestAction;
-import me.anisekai.lib.rest.actions.PutRestAction;
-import me.anisekai.lib.rest.interfaces.IRestAction;
+import fr.alexpado.lib.rest.interfaces.IRestAction;
+import fr.alexpado.lib.rest.actions.GetRestAction;
+import fr.alexpado.lib.rest.actions.PostFormAction;
+import fr.alexpado.lib.rest.actions.PostRestAction;
+import fr.alexpado.lib.rest.actions.PutRestAction;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;

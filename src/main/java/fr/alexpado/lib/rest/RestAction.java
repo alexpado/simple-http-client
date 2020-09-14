@@ -1,9 +1,9 @@
-package me.anisekai.lib.rest;
+package fr.alexpado.lib.rest;
 
-import me.anisekai.lib.rest.enums.RequestMethod;
-import me.anisekai.lib.rest.exceptions.RestException;
-import me.anisekai.lib.rest.interfaces.IRestAction;
-import me.anisekai.lib.rest.interfaces.IRestOptions;
+import fr.alexpado.lib.rest.enums.RequestMethod;
+import fr.alexpado.lib.rest.exceptions.RestException;
+import fr.alexpado.lib.rest.interfaces.IRestAction;
+import fr.alexpado.lib.rest.interfaces.IRestOptions;
 import org.jetbrains.annotations.NotNull;
 
 import javax.net.ssl.HttpsURLConnection;

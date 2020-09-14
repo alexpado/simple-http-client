@@ -1,14 +1,14 @@
-package me.anisekai.lib.rest.actions;
+package fr.alexpado.lib.rest.actions;
 
-import me.anisekai.lib.rest.RestAction;
-import me.anisekai.lib.rest.enums.RequestMethod;
+import fr.alexpado.lib.rest.RestAction;
+import fr.alexpado.lib.rest.enums.RequestMethod;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class PostRestAction extends RestAction<JSONObject> {
+public class PostFormAction extends RestAction<JSONObject> {
 
     @Override
     public @NotNull RequestMethod getRequestMethod() {
@@ -27,7 +27,7 @@ public class PostRestAction extends RestAction<JSONObject> {
 
         Map<String, String> parameters = new HashMap<>();
 
-        parameters.put("Content-Type", "application/json");
+        parameters.put("Content-Type", "application/x-www-form-urlencoded");
 
         return parameters;
     }
@@ -35,12 +35,12 @@ public class PostRestAction extends RestAction<JSONObject> {
     @Override
     public @NotNull String getRequestBody() {
 
-        JSONObject data = new JSONObject();
+        Map<String, String> data = new HashMap<>();
 
         data.put("var1", "val1");
         data.put("var2", "val2");
 
-        return data.toString();
+        return RestAction.mergeMapAsQuery(data);
     }
 
     @NotNull
