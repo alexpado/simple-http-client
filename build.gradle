@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'fr.alexpado'
-version '1.0.0'
+version '1.0.1'
 
 sourceCompatibility = 1.11
 
@@ -19,6 +19,11 @@ dependencies {
     compile group: 'org.json', name: 'json', version: '20200518'
     // https://mvnrepository.com/artifact/org.jetbrains/annotations
     compile group: 'org.jetbrains', name: 'annotations', version: '19.0.0'
+}
+
+java {
+    withJavadocJar()
+    withSourcesJar()
 }
 
 publishing {
@@ -40,5 +45,11 @@ publishing {
         gpr(MavenPublication) {
             from(components.java)
         }
+    }
+}
+
+javadoc {
+    if(JavaVersion.current().isJava9Compatible()) {
+        options.addBooleanOption('html5', true)
     }
 }
