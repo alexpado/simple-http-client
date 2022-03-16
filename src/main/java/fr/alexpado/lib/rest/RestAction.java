@@ -7,7 +7,6 @@ import fr.alexpado.lib.rest.interfaces.IRestOptions;
 import fr.alexpado.lib.rest.interfaces.IRestResponse;
 import org.jetbrains.annotations.NotNull;
 
-import javax.net.ssl.HttpsURLConnection;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -149,10 +148,8 @@ public abstract class RestAction<T> implements IRestAction<T>, IRestOptions<T> {
             urlStr = this.getRequestURL();
         }
 
-        URLConnection connection = new URL(urlStr).openConnection();
-
-
-        HttpURLConnection http = ((HttpsURLConnection) connection);
+        URLConnection     connection = new URL(urlStr).openConnection();
+        HttpURLConnection http       = ((HttpURLConnection) connection);
 
         http.setRequestMethod(this.getRequestMethod().name());
         this.getRequestHeaders().forEach(http::setRequestProperty);
@@ -168,8 +165,8 @@ public abstract class RestAction<T> implements IRestAction<T>, IRestOptions<T> {
             }
         }
 
-        int responseCode = http.getResponseCode();
-        boolean isOk = responseCode >= HttpURLConnection.HTTP_OK && responseCode < HttpURLConnection.HTTP_MULT_CHOICE;
+        int     responseCode = http.getResponseCode();
+        boolean isOk         = responseCode >= HttpURLConnection.HTTP_OK && responseCode < HttpURLConnection.HTTP_MULT_CHOICE;
 
         if (responseCode == HttpURLConnection.HTTP_NO_CONTENT) {
             return null;
