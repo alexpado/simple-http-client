@@ -45,11 +45,11 @@ public interface IRestOptions<T> {
     /**
      * Convert the response body to the desired type for this request.
      *
-     * @param requestBody
+     * @param response
      *         The response body received.
      *
-     * @return The response body as byte array.
+     * @return The response converted into the requested type.
      */
-    T convert(byte[] requestBody);
+    T convert(IRestResponse response);
 
 }

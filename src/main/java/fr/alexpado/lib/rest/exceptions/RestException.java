@@ -1,42 +1,56 @@
 package fr.alexpado.lib.rest.exceptions;
 
-public class RestException extends Exception {
+import fr.alexpado.lib.rest.interfaces.IRestResponse;
 
-    private final byte[] responseBody;
-    private final int    responseStatus;
+import java.util.List;
+import java.util.Map;
+
+public class RestException extends Exception implements IRestResponse {
+
+    private final IRestResponse response;
 
     /**
      * Create a new {@link RestException} instance.
      *
-     * @param responseBody
-     *         The response body that the server returned.
-     * @param responseStatus
-     *         The response status that the server returned.
+     * @param response
+     *         The rest response read from the HTTP return
      */
-    public RestException(byte[] responseBody, int responseStatus) {
+    public RestException(IRestResponse response) {
 
         super("The server did not responded with 2xx code.");
-        this.responseBody   = responseBody;
-        this.responseStatus = responseStatus;
+        this.response = response;
     }
 
     /**
-     * Retrieves the response body that the server returned.
+     * Retrieve the byte array read from the HTTP response.
      *
-     * @return The response body.
+     * @return A byte array.
      */
-    public byte[] getResponseBody() {
+    @Override
+    public byte[] getBody() {
 
-        return responseBody;
+        return this.response.getBody();
     }
 
     /**
-     * Retrieves the response status that the server returned.
+     * Retrieve the headers contained in the HTTP response.
      *
-     * @return The status code.
+     * @return A map containing the headers.
      */
-    public int getResponseStatus() {
+    @Override
+    public Map<String, List<String>> getHeaders() {
 
-        return responseStatus;
+        return this.response.getHeaders();
+    }
+
+    /**
+     * Retrieve the HTTP code.
+     *
+     * @return The HTTP code.
+     */
+    @Override
+    public int getStatusCode() {
+
+        return this.response.getStatusCode();
     }
 }

@@ -4,6 +4,7 @@ import fr.alexpado.lib.rest.enums.RequestMethod;
 import fr.alexpado.lib.rest.exceptions.RestException;
 import fr.alexpado.lib.rest.interfaces.IRestAction;
 import fr.alexpado.lib.rest.interfaces.IRestOptions;
+import fr.alexpado.lib.rest.interfaces.IRestResponse;
 import org.jetbrains.annotations.NotNull;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -14,6 +15,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -64,13 +66,13 @@ public abstract class RestAction<T> implements IRestAction<T>, IRestOptions<T> {
     /**
      * Convert the response body to the desired type for this request.
      *
-     * @param requestBody
+     * @param response
      *         The response body received.
      *
-     * @return The response body as byte array.
+     * @return The response converted into the requested type.
      */
     @Override
-    public T convert(byte[] requestBody) {
+    public T convert(IRestResponse response) {
 
         return null;
     }
@@ -166,9 +168,10 @@ public abstract class RestAction<T> implements IRestAction<T>, IRestOptions<T> {
             }
         }
 
-        boolean isOk = http.getResponseCode() >= HttpURLConnection.HTTP_OK && http.getResponseCode() < HttpURLConnection.HTTP_MULT_CHOICE;
+        int responseCode = http.getResponseCode();
+        boolean isOk = responseCode >= HttpURLConnection.HTTP_OK && responseCode < HttpURLConnection.HTTP_MULT_CHOICE;
 
-        if (http.getResponseCode() == HttpURLConnection.HTTP_NO_CONTENT) {
+        if (responseCode == HttpURLConnection.HTTP_NO_CONTENT) {
             return null;
         }
 
@@ -178,11 +181,32 @@ public abstract class RestAction<T> implements IRestAction<T>, IRestOptions<T> {
             responseBody = stream.readAllBytes();
         }
 
+        IRestResponse response = new IRestResponse() {
+
+            @Override
+            public byte[] getBody() {
+
+                return responseBody;
+            }
+
+            @Override
+            public Map<String, List<String>> getHeaders() {
+
+                return http.getHeaderFields();
+            }
+
+            @Override
+            public int getStatusCode() {
+
+                return responseCode;
+            }
+        };
+
         if (!isOk) {
-            throw new RestException(responseBody, http.getResponseCode());
+            throw new RestException(response);
         }
 
-        return this.convert(responseBody);
+        return this.convert(response);
     }
 
 }
