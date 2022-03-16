@@ -6,4 +6,4 @@
 build/
 
 ## Super Secret Things
-gradle.properties
+secret.properties
