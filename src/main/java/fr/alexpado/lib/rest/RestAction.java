@@ -6,7 +6,6 @@ import fr.alexpado.lib.rest.interfaces.IRestAction;
 import fr.alexpado.lib.rest.interfaces.IRestOptions;
 import org.jetbrains.annotations.NotNull;
 
-import javax.net.ssl.HttpsURLConnection;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -150,7 +149,7 @@ public abstract class RestAction<T> implements IRestAction<T>, IRestOptions<T> {
         URLConnection connection = new URL(urlStr).openConnection();
 
 
-        HttpURLConnection http = ((HttpsURLConnection) connection);
+        HttpURLConnection http = ((HttpURLConnection) connection);
 
         http.setRequestMethod(this.getRequestMethod().name());
         this.getRequestHeaders().forEach(http::setRequestProperty);
