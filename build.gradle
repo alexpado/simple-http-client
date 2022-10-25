@@ -1,24 +1,41 @@
+import java.nio.charset.StandardCharsets
+
 plugins {
     id 'java'
     id 'maven-publish'
+    id 'com.github.ben-manes.versions' version '0.43.0'
+    id 'org.ajoberstar.reckon' version '0.16.1'
 }
 
-group 'fr.alexpado'
-version '1.0.1'
+def generalCharset = StandardCharsets.UTF_8.name()
 
-sourceCompatibility = 1.11
+group 'fr.alexpado'
+
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
+
+compileJava.options.encoding = generalCharset
+compileTestJava.options.encoding = generalCharset
+javadoc.options.encoding = generalCharset
+
+reckon {
+    stages('dev', 'beta', 'rc', 'final')
+
+    scopeCalc = calcScopeFromProp() | calcScopeFromCommitMessages()
+    stageCalc = calcStageFromProp()
+}
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.7.0-M1'
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.9.1'
 
     // https://mvnrepository.com/artifact/org.json/json
-    compile group: 'org.json', name: 'json', version: '20200518'
+    implementation group: 'org.json', name: 'json', version: '20220924'
     // https://mvnrepository.com/artifact/org.jetbrains/annotations
-    compile group: 'org.jetbrains', name: 'annotations', version: '19.0.0'
+    implementation group: 'org.jetbrains', name: 'annotations', version: '23.0.0'
 }
 
 java {
@@ -51,5 +68,17 @@ publishing {
 javadoc {
     if(JavaVersion.current().isJava9Compatible()) {
         options.addBooleanOption('html5', true)
+    }
+}
+
+static def isNonStable(String version) {
+    def stableKeyword = ['RELEASE', 'FINAL', 'GA'].any { it -> version.toUpperCase().contains(it) }
+    def regex = /^[0-9,.v-]+(-r)?$/
+    return !stableKeyword && !(version ==~ regex)
+}
+
+tasks.named("dependencyUpdates").configure {
+    rejectVersionIf {
+        isNonStable(it.candidate.version) && !isNonStable(it.currentVersion)
     }
 }
