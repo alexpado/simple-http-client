@@ -1,9 +1,14 @@
 package fr.alexpado.lib.rest.exceptions;
 
-public class RestException extends Exception {
+import fr.alexpado.lib.rest.interfaces.IRestResponse;
 
-    private final byte[] responseBody;
-    private final int    responseStatus;
+import java.util.Map;
+
+public class RestException extends Exception implements IRestResponse {
+
+    private final byte[]              responseBody;
+    private final int                 responseStatus;
+    private final Map<String, String> headers;
 
     /**
      * Create a new {@link RestException} instance.
@@ -12,31 +17,32 @@ public class RestException extends Exception {
      *         The response body that the server returned.
      * @param responseStatus
      *         The response status that the server returned.
+     * @param headers
+     *         The response headers that the server returned.
      */
-    public RestException(byte[] responseBody, int responseStatus) {
+    public RestException(byte[] responseBody, int responseStatus, Map<String, String> headers) {
 
         super("The server did not responded with 2xx code.");
         this.responseBody   = responseBody;
         this.responseStatus = responseStatus;
+        this.headers        = headers;
     }
 
-    /**
-     * Retrieves the response body that the server returned.
-     *
-     * @return The response body.
-     */
-    public byte[] getResponseBody() {
+    @Override
+    public byte[] getBody() {
 
-        return responseBody;
+        return this.responseBody;
     }
 
-    /**
-     * Retrieves the response status that the server returned.
-     *
-     * @return The status code.
-     */
-    public int getResponseStatus() {
+    @Override
+    public int getCode() {
 
-        return responseStatus;
+        return this.responseStatus;
+    }
+
+    @Override
+    public Map<String, String> getHeaders() {
+
+        return this.headers;
     }
 }

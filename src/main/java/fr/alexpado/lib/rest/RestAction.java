@@ -185,7 +185,7 @@ public abstract class RestAction<T> implements IRestAction<T>, IRestOptions<T> {
         });
 
         if (!isOk) {
-            throw new RestException(responseBody, httpCode);
+            throw new RestException(responseBody, httpCode, headers);
         }
 
         return this.convert(new IRestResponse() {
