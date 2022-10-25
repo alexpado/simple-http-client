@@ -2,7 +2,9 @@ import java.nio.charset.StandardCharsets
 
 plugins {
     id 'java'
+    id 'signing'
     id 'maven-publish'
+    id 'io.github.gradle-nexus.publish-plugin' version '1.1.0'
     id 'com.github.ben-manes.versions' version '0.43.0'
     id 'org.ajoberstar.reckon' version '0.16.1'
 }
@@ -43,28 +45,6 @@ java {
     withSourcesJar()
 }
 
-publishing {
-
-    repositories {
-        maven {
-            name = "GitHubPackages"
-            url = uri('https://maven.pkg.github.com/alexpado/simple-http-client')
-
-            credentials {
-                username = project.findProperty('gpr.user') ?: System.getenv('username')
-                password = project.findProperty('gpr.key') ?: System.getenv('token')
-            }
-        }
-
-
-    }
-    publications {
-        gpr(MavenPublication) {
-            from(components.java)
-        }
-    }
-}
-
 javadoc {
     if(JavaVersion.current().isJava9Compatible()) {
         options.addBooleanOption('html5', true)
@@ -82,3 +62,91 @@ tasks.named("dependencyUpdates").configure {
         isNonStable(it.candidate.version) && !isNonStable(it.currentVersion)
     }
 }
+
+// <editor-fold desc="Publish Configuration Hell">
+ext["signing.keyId"] = ''
+ext["signing.password"] = ''
+ext["signing.secretKeyRingFile"] = ''
+ext["ossrhUsername"] = ''
+ext["ossrhPassword"] = ''
+ext["sonatypeStagingProfileId"] = ''
+
+File secretPropsFile = project.rootProject.file('secret.properties')
+if (secretPropsFile.exists()) {
+    // Read secret.properties file first if it exists
+    Properties p = new Properties()
+    new FileInputStream(secretPropsFile).withCloseable { is -> p.load(is) }
+    p.each { name, value -> ext[name] = value }
+} else {
+    // Use system environment variables
+    ext["ossrhUsername"] = System.getenv('OSSRH_USERNAME')
+    ext["ossrhPassword"] = System.getenv('OSSRH_PASSWORD')
+    ext["sonatypeStagingProfileId"] = System.getenv('SONATYPE_STAGING_PROFILE_ID')
+    ext["signing.keyId"] = System.getenv('SIGNING_KEY_ID')
+    ext["signing.password"] = System.getenv('SIGNING_PASSWORD')
+    ext["signing.secretKeyRingFile"] = System.getenv('SIGNING_SECRET_KEY_RING_FILE')
+}
+
+nexusPublishing {
+    repositories {
+        sonatype {  //only for users registered in Sonatype after 24 Feb 2021
+            stagingProfileId = sonatypeStagingProfileId
+            username = ossrhUsername
+            password = ossrhPassword
+
+            nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
+            snapshotRepositoryUrl.set(uri("https://s01.oss.sonatype.org/content/repositories/snapshots/"))
+        }
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+
+            pom {
+                name = project.name
+                description = 'Simple wrapper for the Java 8 HTTP API (Depends on JDK11+).'
+
+                url = 'https://github.com/alexpado/simple-http-client'
+
+                licenses {
+                    license {
+                        name = 'Apache License, Version 2.0'
+                        url = 'https://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'alexpado'
+                        name = 'Alexandre PADOVAN'
+                        email = 'contact@alexpado.fr'
+                    }
+                }
+
+                scm {
+                    connection = 'scm:git:github.com/alexpado/simple-http-client.git'
+                    developerConnection = 'scm:git:ssh://github.com/alexpado/simple-http-client.git'
+                    url = 'https://github.com/alexpado/simple-http-client/tree/main'
+                }
+            }
+        }
+    }
+}
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+signing {
+    sign publishing.publications
+}
+
+javadoc {
+    if (JavaVersion.current().isJava9Compatible()) {
+        options.addBooleanOption('html5', true)
+    }
+}
+// </editor-fold>
