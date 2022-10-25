@@ -2,6 +2,7 @@ package fr.alexpado.lib.rest.actions;
 
 import fr.alexpado.lib.rest.RestAction;
 import fr.alexpado.lib.rest.enums.RequestMethod;
+import fr.alexpado.lib.rest.interfaces.IRestResponse;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
@@ -45,8 +46,8 @@ public class DeleteRestAction extends RestAction<JSONObject> {
 
     @NotNull
     @Override
-    public JSONObject convert(byte[] requestBody) {
+    public JSONObject convert(IRestResponse response) {
 
-        return new JSONObject(new String(requestBody));
+        return new JSONObject(new String(response.getBody()));
     }
 }

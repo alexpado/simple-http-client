@@ -4,6 +4,7 @@ import fr.alexpado.lib.rest.enums.RequestMethod;
 import fr.alexpado.lib.rest.exceptions.RestException;
 import fr.alexpado.lib.rest.interfaces.IRestAction;
 import fr.alexpado.lib.rest.interfaces.IRestOptions;
+import fr.alexpado.lib.rest.interfaces.IRestResponse;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.InputStream;
@@ -63,13 +64,13 @@ public abstract class RestAction<T> implements IRestAction<T>, IRestOptions<T> {
     /**
      * Convert the response body to the desired type for this request.
      *
-     * @param requestBody
+     * @param response
      *         The response body received.
      *
-     * @return The response body as byte array.
+     * @return The converted response body
      */
     @Override
-    public T convert(byte[] requestBody) {
+    public T convert(IRestResponse response) {
 
         return null;
     }
@@ -146,10 +147,8 @@ public abstract class RestAction<T> implements IRestAction<T>, IRestOptions<T> {
             urlStr = this.getRequestURL();
         }
 
-        URLConnection connection = new URL(urlStr).openConnection();
-
-
-        HttpURLConnection http = ((HttpURLConnection) connection);
+        URLConnection     connection = new URL(urlStr).openConnection();
+        HttpURLConnection http       = ((HttpURLConnection) connection);
 
         http.setRequestMethod(this.getRequestMethod().name());
         this.getRequestHeaders().forEach(http::setRequestProperty);
@@ -165,9 +164,10 @@ public abstract class RestAction<T> implements IRestAction<T>, IRestOptions<T> {
             }
         }
 
-        boolean isOk = http.getResponseCode() >= HttpURLConnection.HTTP_OK && http.getResponseCode() < HttpURLConnection.HTTP_MULT_CHOICE;
+        int     httpCode = http.getResponseCode();
+        boolean isOk = httpCode >= HttpURLConnection.HTTP_OK && httpCode < HttpURLConnection.HTTP_MULT_CHOICE;
 
-        if (http.getResponseCode() == HttpURLConnection.HTTP_NO_CONTENT) {
+        if (httpCode == HttpURLConnection.HTTP_NO_CONTENT) {
             return null;
         }
 
@@ -177,11 +177,37 @@ public abstract class RestAction<T> implements IRestAction<T>, IRestOptions<T> {
             responseBody = stream.readAllBytes();
         }
 
+        Map<String, String> headers = new HashMap<>();
+        http.getHeaderFields().forEach((key, values) -> {
+            if (key != null && values != null) {
+                headers.put(key, String.join(", ", values));
+            }
+        });
+
         if (!isOk) {
-            throw new RestException(responseBody, http.getResponseCode());
+            throw new RestException(responseBody, httpCode);
         }
 
-        return this.convert(responseBody);
+        return this.convert(new IRestResponse() {
+
+            @Override
+            public byte[] getBody() {
+
+                return responseBody;
+            }
+
+            @Override
+            public int getCode() {
+
+                return httpCode;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() {
+
+                return headers;
+            }
+        });
     }
 
 }
