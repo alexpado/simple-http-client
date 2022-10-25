@@ -29,6 +29,7 @@ reckon {
 
 repositories {
     mavenCentral()
+    mavenLocal()
 }
 
 dependencies {
